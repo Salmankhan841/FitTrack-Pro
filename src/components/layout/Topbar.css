@@ -1,0 +1,352 @@
+/* =========================================
+   TOPBAR COMPONENT STYLES (CLEAN & PROFESSIONAL)
+   ========================================= */
+
+.topbar {
+  height: 68px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 var(--spacing-xl);
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+
+body.light-theme .topbar {
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+/* Hamburger Menu Button */
+.topbar-menu-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.topbar-menu-btn:hover {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: var(--accent-primary);
+  color: #ffffff;
+}
+
+body.light-theme .topbar-menu-btn {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #0f172a;
+}
+
+body.light-theme .topbar-menu-btn:hover {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  color: #dc2626;
+}
+
+/* Mobile Brand Logo (hidden on desktop) */
+.topbar-mobile-logo {
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.topbar-logo-img {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.topbar-logo-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+.topbar-logo-title span {
+  color: var(--accent-primary);
+}
+
+/* Desktop Search Bar Link */
+.topbar-search-link {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.55rem 1rem;
+  width: 320px;
+  max-width: 100%;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.topbar-search-link:hover {
+  border-color: var(--border-highlight);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-secondary);
+}
+
+body.light-theme .topbar-search-link {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+}
+
+body.light-theme .topbar-search-link:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+.search-icon {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.search-placeholder {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.search-kbd {
+  font-size: 0.65rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+body.light-theme .search-kbd {
+  background: #e2e8f0;
+  border: 1px solid #cbd5e1;
+  color: #64748b;
+}
+
+/* Right Actions Container */
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.icon-btn {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  transition: all 0.18s ease;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.icon-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-primary);
+  border-color: var(--border-highlight);
+}
+
+body.light-theme .icon-btn {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #475569;
+}
+
+body.light-theme .icon-btn:hover {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  color: #dc2626;
+}
+
+.mobile-search-btn {
+  display: none;
+}
+
+.logout-mobile-btn {
+  display: none;
+}
+
+.notification-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  padding: 2px 5px;
+  min-width: 18px;
+  height: 18px;
+  background: var(--accent-danger);
+  border: 2px solid var(--bg-surface);
+  border-radius: var(--radius-full);
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* User Profile Pill */
+.user-profile-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 4px 12px 4px 4px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-color);
+  transition: all 0.18s ease;
+  text-decoration: none;
+  color: var(--text-primary);
+}
+
+.user-profile-pill:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--border-highlight);
+}
+
+body.light-theme .user-profile-pill {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #0f172a;
+}
+
+body.light-theme .user-profile-pill:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.avatar-wrap {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent-primary);
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 0.85rem;
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatar-status-dot {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--accent-success);
+  border: 2px solid var(--bg-surface);
+}
+
+.user-text-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--text-primary);
+}
+
+body.light-theme .user-name {
+  color: #0f172a;
+}
+
+.user-role-tag {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--accent-primary-light);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+body.light-theme .user-role-tag {
+  color: #dc2626;
+}
+
+/* =========================================
+   RESPONSIVE BREAKPOINTS
+   ========================================= */
+@media (max-width: 1024px) {
+  .topbar {
+    padding: 0 var(--spacing-md);
+  }
+
+  .topbar-menu-btn {
+    display: flex;
+  }
+
+  .topbar-mobile-logo {
+    display: flex;
+  }
+
+  .topbar-search-link {
+    display: none;
+  }
+
+  .mobile-search-btn {
+    display: flex;
+  }
+}
+
+@media (max-width: 640px) {
+  .user-text-wrap {
+    display: none;
+  }
+
+  .user-profile-pill {
+    padding: 0;
+    border: none;
+    background: transparent;
+  }
+
+  .logout-mobile-btn {
+    display: flex;
+  }
+}

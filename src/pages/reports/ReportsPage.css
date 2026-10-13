@@ -1,0 +1,115 @@
+/* =========================================
+   REPORTS PAGE RESPONSIVE STYLES (CLEAN & PROFESSIONAL)
+   ========================================= */
+
+.reports-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+  max-width: 1000px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.reports-header h1 {
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  margin: 0;
+  text-transform: uppercase;
+}
+
+body.light-theme .reports-header h1 {
+  color: #0f172a;
+}
+
+.reports-header p {
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  margin: 4px 0 0 0;
+}
+
+.reports-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-lg);
+}
+
+.report-card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  gap: 1rem;
+}
+
+.report-icon {
+  color: var(--accent-primary-light);
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  padding: 18px;
+  border-radius: var(--radius-xl);
+  margin-bottom: 0.5rem;
+  transition: transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+body.light-theme .report-icon {
+  background: #fee2e2;
+  border-color: #fecaca;
+  color: #dc2626;
+}
+
+.card:hover .report-icon {
+  transform: scale(1.05);
+  border-color: var(--accent-primary);
+}
+
+body.light-theme .card:hover .report-icon {
+  background: #fee2e2;
+  border-color: #dc2626;
+}
+
+.report-card-content p {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  font-weight: 600;
+}
+
+body.light-theme .report-card-content p {
+  color: #475569;
+}
+
+.export-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-top: 0.5rem;
+  width: 100%;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.export-actions .btn {
+  flex: 1;
+  min-width: 130px;
+}
+
+@media (max-width: 768px) {
+  .reports-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .export-actions {
+    flex-direction: column;
+  }
+
+  .export-actions .btn {
+    width: 100%;
+  }
+}

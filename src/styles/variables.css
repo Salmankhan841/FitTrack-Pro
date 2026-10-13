@@ -1,0 +1,114 @@
+:root,
+[data-theme="dark"] {
+  /* =========================================
+     DARK THEME (Matte Athletic Carbon - No Neon Haze)
+     ========================================= */
+  --bg-primary: #0a0b10;
+  --body-bg: #0a0b10;
+  --bg-secondary: #0f1118;
+  --bg-surface: #131620;
+  --bg-surface-elevated: #181b28;
+  --bg-card-glass: #131620;
+  --bg-card-glass-hover: #171a27;
+  
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-highlight: rgba(255, 255, 255, 0.14);
+  --border-neon-primary: rgba(239, 68, 68, 0.35);
+  
+  --chart-grid: rgba(255, 255, 255, 0.07);
+  --chart-cursor: rgba(255, 255, 255, 0.04);
+  
+  /* Hardcore Athletic Red Accents */
+  --accent-primary: #ef4444;
+  --accent-primary-hover: #dc2626;
+  --accent-primary-light: #f87171;
+  --accent-primary-dark: #b91c1c;
+  --accent-primary-glow: transparent;
+  
+  --accent-secondary: #f97316;
+  --accent-secondary-hover: #ea580c;
+  --accent-secondary-light: #fb923c;
+  
+  --accent-success: #10b981;
+  --accent-success-light: #34d399;
+  
+  --accent-warning: #f59e0b;
+  --accent-warning-light: #fbbf24;
+  
+  --accent-danger: #dc2626;
+  --accent-danger-light: #ef4444;
+  
+  --accent-purple: #8b5cf6;
+  --accent-purple-light: #a78bfa;
+  
+  /* Clean Solid & Subtle Gradients */
+  --gradient-primary: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  --gradient-accent: linear-gradient(135deg, #ef4444 0%, #f97316 100%);
+  --gradient-fire: linear-gradient(135deg, #ef4444 0%, #ea580c 100%);
+  --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  --gradient-warning: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  --gradient-danger: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+  
+  /* Text Contrast Hierarchy */
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-inverse: #09090b;
+  
+  /* Typography */
+  --font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  
+  /* Spacing */
+  --spacing-2xs: 0.2rem;
+  --spacing-xs: 0.35rem;
+  --spacing-sm: 0.65rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  
+  /* Border Radii */
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+
+  --radius-cards: 14px;
+  --radius-controls: 10px;
+  --radius-pill: 9999px;
+  
+  /* Crisp Depth Elevation Shadows (No Colored Neon Glows) */
+  --shadow-glow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-glow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.4), 0 4px 14px rgba(0, 0, 0, 0.2);
+  --shadow-card-hover: 0 6px 20px rgba(0, 0, 0, 0.45);
+  --shadow-glass: 0 2px 10px rgba(0, 0, 0, 0.3);
+
+  /* Modern Compatibility Aliases */
+  --bg: var(--bg-primary);
+  --surface: var(--bg-surface);
+  --surface-2: var(--bg-secondary);
+  --ink: var(--text-primary);
+  --ink-muted: var(--text-secondary);
+  --border: var(--border-color);
+  --accent: var(--accent-primary);
+  --accent-tint: rgba(239, 68, 68, 0.12);
+  --on-accent: #ffffff;
+  --success: var(--accent-success);
+  --warning: var(--accent-warning);
+  --danger: var(--accent-danger);
+
+  color-scheme: dark;
+}
+

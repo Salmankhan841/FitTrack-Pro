@@ -1,0 +1,110 @@
+/* =========================================
+   CARD COMPONENT STYLES (CLEAN & PROFESSIONAL)
+   With smooth slide-in entry and tactile hover motion
+   ========================================= */
+
+.card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+  width: 100%;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  position: relative;
+  
+  /* Smooth Slide-Up Entrance Animation */
+  animation: cardSlideUp 0.38s cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: transform, opacity;
+  
+  /* Responsive transition for hover state */
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 0.22s ease, 
+              border-color 0.2s ease;
+}
+
+/* Stagger card appearances within common layout grids */
+.stats-grid > .card:nth-child(1),
+.about-grid > .card:nth-child(1),
+.services-grid > .card:nth-child(1) {
+  animation-delay: 0.03s;
+}
+
+.stats-grid > .card:nth-child(2),
+.about-grid > .card:nth-child(2),
+.services-grid > .card:nth-child(2) {
+  animation-delay: 0.08s;
+}
+
+.stats-grid > .card:nth-child(3),
+.about-grid > .card:nth-child(3),
+.services-grid > .card:nth-child(3) {
+  animation-delay: 0.13s;
+}
+
+.stats-grid > .card:nth-child(4),
+.about-grid > .card:nth-child(4),
+.services-grid > .card:nth-child(4) {
+  animation-delay: 0.18s;
+}
+
+body.light-theme .card {
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-card);
+}
+
+/* Tactile Slide-Up Lift on Hover */
+.card:hover,
+.card-glow:hover {
+  border-color: var(--border-highlight);
+  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-4px) !important;
+}
+
+body.light-theme .card:hover,
+body.light-theme .card-glow:hover {
+  border-color: var(--border-highlight);
+  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-4px) !important;
+}
+
+.card-header {
+  padding: 1.25rem 1.4rem 0.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.card-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.card-subtitle {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.card-body {
+  padding: 1.25rem 1.4rem;
+  flex: 1;
+}
+
+@media (max-width: 640px) {
+  .card-header {
+    padding: 1rem 1rem 0.25rem;
+  }
+
+  .card-title {
+    font-size: 1.05rem;
+  }
+
+  .card-body {
+    padding: 1rem;
+  }
+}

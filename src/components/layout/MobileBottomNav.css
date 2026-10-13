@@ -1,0 +1,97 @@
+/* =========================================
+   MOBILE BOTTOM NAVIGATION BAR STYLES (CLEAN & PROFESSIONAL)
+   ========================================= */
+
+.mobile-bottom-nav {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-bottom-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 64px;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    background: var(--bg-surface);
+    border-top: 1px solid var(--border-color);
+    z-index: 950;
+    box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  body.light-theme .mobile-bottom-nav {
+    background: #ffffff;
+    border-top: 1px solid #e2e8f0;
+    box-shadow: 0 -2px 10px rgba(15, 23, 42, 0.05);
+  }
+
+  .bottom-nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    height: 100%;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    transition: color 0.18s ease;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    padding: 6px 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body.light-theme .bottom-nav-item {
+    color: #64748b;
+  }
+
+  .bottom-nav-icon {
+    transition: color 0.18s ease;
+  }
+
+  .bottom-nav-item:hover,
+  .bottom-nav-item:focus {
+    color: var(--text-primary);
+  }
+
+  body.light-theme .bottom-nav-item:hover,
+  body.light-theme .bottom-nav-item:focus {
+    color: #0f172a;
+  }
+
+  .bottom-nav-item.active {
+    color: var(--accent-primary);
+  }
+
+  body.light-theme .bottom-nav-item.active {
+    color: #dc2626;
+  }
+
+  .bottom-nav-item.active .bottom-nav-icon {
+    color: var(--accent-primary);
+  }
+
+  .bottom-nav-item.active::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    width: 24px;
+    height: 3px;
+    background: var(--accent-primary);
+    border-radius: var(--radius-full);
+  }
+
+  .bottom-nav-more {
+    font-family: inherit;
+  }
+}

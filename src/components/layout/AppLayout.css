@@ -1,0 +1,159 @@
+/* =========================================
+   APP LAYOUT RESPONSIVE GRID & WRAPPER
+   ========================================= */
+
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  min-height: 100dvh;
+  width: 100%;
+  position: relative;
+  background-color: var(--body-bg);
+}
+
+/* Viewport-locked subtle atmospheric gym backdrop */
+.app-bg-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  pointer-events: none;
+  z-index: 0;
+  background-color: var(--body-bg);
+  background-image: 
+    linear-gradient(rgba(10, 11, 16, 0.94), rgba(10, 11, 16, 0.97)),
+    url('/goku-bg.jpg');
+  background-size: cover;
+  background-position: center 20%;
+  background-repeat: no-repeat;
+  will-change: transform;
+}
+
+body.light-theme .app-bg-canvas {
+  display: none;
+}
+
+.app-content-wrapper {
+  margin-left: 260px; /* Offset for desktop fixed sidebar */
+  flex: 1;
+  min-width: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.app-main-content {
+  flex: 1;
+  padding: 2rem 2.5rem;
+  min-width: 0;
+  max-width: 1600px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Tablet Responsive (<= 1024px) */
+@media (max-width: 1024px) {
+  .app-content-wrapper {
+    margin-left: 0; /* Sidebar becomes slide-over drawer */
+  }
+
+  .app-main-content {
+    padding: 1.5rem 1.75rem;
+  }
+}
+
+/* Mobile Responsive (<= 768px) */
+@media (max-width: 768px) {
+  .app-layout {
+    flex-direction: column;
+  }
+
+  .app-content-wrapper {
+    margin-left: 0;
+    margin-bottom: 72px; /* Clears the mobile bottom navigation */
+    width: 100%;
+  }
+
+  .app-main-content {
+    padding: 1rem 1rem 1.5rem;
+  }
+}
+
+/* Small mobile (<= 480px) */
+@media (max-width: 480px) {
+  .app-main-content {
+    padding: 0.85rem 0.75rem 1.5rem;
+  }
+}
+
+/* =========================================
+   INNER APP FOOTER
+   ========================================= */
+.app-footer {
+  width: 100%;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 1.25rem 2.5rem;
+  background: rgba(10, 11, 16, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  margin-top: auto;
+  position: relative;
+  z-index: 5;
+}
+
+.app-footer-inner {
+  max-width: 1600px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: var(--text-muted, #64748b);
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.app-footer-brand {
+  color: var(--text-secondary, #94a3b8);
+  font-weight: 500;
+}
+
+.app-footer-brand span {
+  color: var(--accent-primary, #ef4444);
+  font-weight: 700;
+}
+
+.app-footer-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-muted, #64748b);
+}
+
+.app-footer-status .status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+}
+
+@media (max-width: 1024px) {
+  .app-footer {
+    padding: 1rem 1.75rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-footer {
+    padding: 1rem;
+  }
+  
+  .app-footer-inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

@@ -1,0 +1,158 @@
+/* =========================================
+   PERFORMANCE-FOCUSED CSS ANIMATIONS
+   Clean, refined motion curves (cubic-bezier 60fps)
+   ========================================= */
+
+/* Generic Fades */
+@keyframes fadeIn {
+  from { 
+    opacity: 0; 
+  }
+  to { 
+    opacity: 1; 
+  }
+}
+
+/* Card Slide Up (Professional entrance) */
+@keyframes cardSlideUp {
+  0% { 
+    opacity: 0; 
+    transform: translateY(22px); 
+  }
+  100% { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+/* Card Slide In from Left */
+@keyframes cardSlideRight {
+  0% { 
+    opacity: 0; 
+    transform: translateX(-20px); 
+  }
+  100% { 
+    opacity: 1; 
+    transform: translateX(0); 
+  }
+}
+
+/* Card Slide In from Right */
+@keyframes cardSlideLeft {
+  0% { 
+    opacity: 0; 
+    transform: translateX(20px); 
+  }
+  100% { 
+    opacity: 1; 
+    transform: translateX(0); 
+  }
+}
+
+/* Subtle Pulse for Active Accents */
+@keyframes subtlePulse {
+  0%, 100% { 
+    transform: scale(1); 
+  }
+  50% { 
+    transform: scale(1.02); 
+  }
+}
+
+/* Utility Animation Classes */
+.animate-fade-in {
+  animation: fadeIn 0.35s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: cardSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-right {
+  animation: cardSlideRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-left {
+  animation: cardSlideLeft 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-card-slide {
+  animation: cardSlideUp 0.42s cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: transform, opacity;
+}
+
+/* =========================================
+   AOS REFINED SLIDE OVERRIDES
+   Upgrading generic 100px jumps to silky 22px slides
+   ========================================= */
+[data-aos="fade-up"] {
+  transform: translateY(22px) !important;
+  opacity: 0;
+  transition-property: transform, opacity !important;
+  transition-duration: 0.5s !important;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+[data-aos="fade-up"].aos-animate {
+  transform: translateY(0) !important;
+  opacity: 1;
+}
+
+[data-aos="fade-down"] {
+  transform: translateY(-22px) !important;
+  opacity: 0;
+  transition-property: transform, opacity !important;
+  transition-duration: 0.5s !important;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+[data-aos="fade-down"].aos-animate {
+  transform: translateY(0) !important;
+  opacity: 1;
+}
+
+[data-aos="fade-right"] {
+  transform: translateX(-24px) !important;
+  opacity: 0;
+  transition-property: transform, opacity !important;
+  transition-duration: 0.5s !important;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+[data-aos="fade-right"].aos-animate {
+  transform: translateX(0) !important;
+  opacity: 1;
+}
+
+[data-aos="fade-left"] {
+  transform: translateX(24px) !important;
+  opacity: 0;
+  transition-property: transform, opacity !important;
+  transition-duration: 0.5s !important;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+[data-aos="fade-left"].aos-animate {
+  transform: translateX(0) !important;
+  opacity: 1;
+}
+
+/* Stagger utilities for CSS child items */
+.stagger-1 { animation-delay: 0.04s; }
+.stagger-2 { animation-delay: 0.09s; }
+.stagger-3 { animation-delay: 0.14s; }
+.stagger-4 { animation-delay: 0.19s; }
+.stagger-5 { animation-delay: 0.24s; }
+.stagger-6 { animation-delay: 0.29s; }
+
+/* Accessibility: Reduce motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
