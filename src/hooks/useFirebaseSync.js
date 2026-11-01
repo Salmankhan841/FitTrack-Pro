@@ -42,7 +42,11 @@ export const useFirebaseSync = () => {
     if (!isFirebaseConfigured || !userUid) return;
 
     let isMounted = true;
-    const isRealUser = userEmail !== 'athlete@fitnesstracker.com' && userEmail !== 'admin@fitnesstracker.com';
+    const isRealUser = 
+      userEmail !== 'athlete@fitnesstracker.com' && 
+      userEmail !== 'alex@fitnesspro.com' && 
+      userEmail !== 'alex@fitnesstracker.com' && 
+      userEmail !== 'admin@fitnesstracker.com';
 
     const loadUserData = async () => {
       try {

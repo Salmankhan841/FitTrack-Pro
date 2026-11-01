@@ -8,7 +8,7 @@ export const isTokenExpired = (token) => {
   if (!token) return true;
   
   // Allow mock tokens for development
-  if (token.startsWith('mock-jwt-token')) return false;
+  if (token.startsWith('mock-')) return false;
 
   try {
     const decoded = jwtDecode(token);

@@ -13,7 +13,7 @@ export const login = createAsyncThunk('auth/login', async (credentials, { reject
   try {
     const emailLower = credentials.email.toLowerCase().trim();
 
-    // 1. Super Admin mock credentials check
+    // 1. Super Admin credentials check
     if (emailLower === 'admin@fitnesstracker.com') {
       if (credentials.password !== 'Salman987$') {
         throw new Error('Invalid admin credentials. Use: Salman987$');
@@ -23,16 +23,32 @@ export const login = createAsyncThunk('auth/login', async (credentials, { reject
       return response.data;
     }
 
-    // 2. Firebase Authentication when configured
+    // 2. Demo athlete credentials check
+    const isDemoAthlete = 
+      (emailLower === 'athlete@fitnesstracker.com' || 
+       emailLower === 'alex@fitnesspro.com' || 
+       emailLower === 'alex@fitnesstracker.com') &&
+      (credentials.password === 'Password123!' || credentials.password === 'password123');
+
+    // 3. Firebase Authentication when configured
     if (isFirebaseConfigured) {
       try {
         const fbResult = await loginWithFirebase(credentials.email, credentials.password);
         setToken(fbResult.token);
         return fbResult;
       } catch (fbError) {
-        // If demo athlete login is attempted and user not registered in Firebase yet, fall back to mock
-        if (emailLower === 'athlete@fitnesstracker.com' && credentials.password === 'Password123!') {
-          const response = await loginApi(credentials);
+        // If demo athlete login fails in Firebase, fall back to robust mock session
+        if (isDemoAthlete) {
+          const response = await loginApi({
+            email: 'athlete@fitnesstracker.com',
+            password: 'Password123!'
+          });
+          response.data.user = {
+            ...response.data.user,
+            name: 'Demo Athlete (Alex)',
+            email: 'athlete@fitnesstracker.com',
+            role: 'user'
+          };
           setToken(response.data.token);
           return response.data;
         }
@@ -40,7 +56,7 @@ export const login = createAsyncThunk('auth/login', async (credentials, { reject
       }
     }
 
-    // 3. Fallback to mock login
+    // 4. Fallback to mock login
     const response = await loginApi(credentials);
     response.data.user = {
       ...response.data.user,
@@ -55,14 +71,79 @@ export const login = createAsyncThunk('auth/login', async (credentials, { reject
 
 export const register = createAsyncThunk('auth/register', async (userData, { rejectWithValue }) => {
   try {
-    // 1. Firebase Registration when configured
-    if (isFirebaseConfigured) {
-      const fbResult = await registerWithFirebase(userData.email, userData.password, userData.name);
-      setToken(fbResult.token);
-      return fbResult;
+    const emailLower = userData.email.toLowerCase().trim();
+
+    // 1. Super Admin mock registration check
+    if (emailLower === 'admin@fitnesstracker.com') {
+      const response = await registerApi(userData);
+      response.data.user = {
+        ...response.data.user,
+        name: 'Super Admin',
+        email: 'admin@fitnesstracker.com',
+        role: 'admin'
+      };
+      setToken(response.data.token);
+      return response.data;
     }
 
-    // 2. Fallback to mock registration
+    // 2. Demo athlete registration check
+    const isDemoAthlete = 
+      (emailLower === 'athlete@fitnesstracker.com' || 
+       emailLower === 'alex@fitnesspro.com' || 
+       emailLower === 'alex@fitnesstracker.com') &&
+      (userData.password === 'Password123!' || userData.password === 'password123');
+
+    if (isDemoAthlete) {
+      if (isFirebaseConfigured) {
+        try {
+          const fbResult = await registerWithFirebase(userData.email, userData.password, userData.name || 'Demo Athlete');
+          setToken(fbResult.token);
+          return fbResult;
+        } catch {
+          // If already registered in Firebase, attempt login with same credentials
+          try {
+            const loginResult = await loginWithFirebase(userData.email, userData.password);
+            setToken(loginResult.token);
+            return loginResult;
+          } catch {
+            // Fall back to clean mock demo session
+            const response = await registerApi(userData);
+            response.data.user = {
+              ...response.data.user,
+              name: userData.name || 'Demo Athlete (Alex)',
+              email: 'athlete@fitnesstracker.com',
+              role: 'user'
+            };
+            setToken(response.data.token);
+            return response.data;
+          }
+        }
+      }
+
+      // If firebase is not configured
+      const response = await registerApi(userData);
+      response.data.user = {
+        ...response.data.user,
+        name: userData.name || 'Demo Athlete (Alex)',
+        email: 'athlete@fitnesstracker.com',
+        role: 'user'
+      };
+      setToken(response.data.token);
+      return response.data;
+    }
+
+    // 3. Firebase Registration for regular users
+    if (isFirebaseConfigured) {
+      try {
+        const fbResult = await registerWithFirebase(userData.email, userData.password, userData.name);
+        setToken(fbResult.token);
+        return fbResult;
+      } catch (fbError) {
+        return rejectWithValue(fbError.message || 'Registration failed');
+      }
+    }
+
+    // 4. Fallback to mock registration
     const response = await registerApi(userData);
     response.data.user = {
       ...response.data.user,

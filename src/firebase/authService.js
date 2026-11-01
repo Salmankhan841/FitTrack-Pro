@@ -16,6 +16,32 @@ import { doc, getDoc, setDoc, updateDoc, collection, getDocs } from 'firebase/fi
 import { auth, db, isFirebaseConfigured } from './config';
 
 /**
+ * Format Firebase Auth errors into clear, friendly messages
+ */
+export const getCleanAuthErrorMessage = (error) => {
+  if (!error) return 'Authentication request failed.';
+  const code = error.code || '';
+  switch (code) {
+    case 'auth/email-already-in-use':
+      return 'This email address is already in use. Please sign in instead.';
+    case 'auth/invalid-credential':
+    case 'auth/wrong-password':
+    case 'auth/user-not-found':
+      return 'Invalid email or password. Please verify your credentials.';
+    case 'auth/weak-password':
+      return 'Password should be at least 6 characters.';
+    case 'auth/invalid-email':
+      return 'Please enter a valid email address.';
+    case 'auth/too-many-requests':
+      return 'Too many failed attempts. Please wait a moment and try again.';
+    case 'auth/network-request-failed':
+      return 'Network connection error. Please check your internet connection.';
+    default:
+      return error.message || 'Authentication error. Please try again.';
+  }
+};
+
+/**
  * Register a new user with Firebase Auth and initialize Firestore user document
  */
 export const registerWithFirebase = async (email, password, name) => {
@@ -23,36 +49,43 @@ export const registerWithFirebase = async (email, password, name) => {
     throw new Error('Firebase is not configured. Please supply keys in .env');
   }
 
-  const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-  const firebaseUser = userCredential.user;
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const firebaseUser = userCredential.user;
 
-  // Update Auth Profile Display Name
-  if (name) {
-    await updateFirebaseProfile(firebaseUser, { displayName: name });
+    // Update Auth Profile Display Name
+    if (name) {
+      await updateFirebaseProfile(firebaseUser, { displayName: name });
+    }
+
+    // Create initial user document in Firestore
+    const userData = {
+      uid: firebaseUser.uid,
+      name: name || email.split('@')[0],
+      email: firebaseUser.email,
+      role: 'user',
+      age: 25,
+      weight: 75,
+      height: 180,
+      gender: 'Male',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    await setDoc(doc(db, 'users', firebaseUser.uid), userData);
+
+    const token = await firebaseUser.getIdToken();
+
+    return {
+      user: userData,
+      token
+    };
+  } catch (error) {
+    const cleanMsg = getCleanAuthErrorMessage(error);
+    const err = new Error(cleanMsg);
+    err.code = error.code;
+    throw err;
   }
-
-  // Create initial user document in Firestore
-  const userData = {
-    uid: firebaseUser.uid,
-    name: name || email.split('@')[0],
-    email: firebaseUser.email,
-    role: 'user',
-    age: 25,
-    weight: 75,
-    height: 180,
-    gender: 'Male',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  };
-
-  await setDoc(doc(db, 'users', firebaseUser.uid), userData);
-
-  const token = await firebaseUser.getIdToken();
-
-  return {
-    user: userData,
-    token
-  };
 };
 
 /**
@@ -63,36 +96,43 @@ export const loginWithFirebase = async (email, password) => {
     throw new Error('Firebase is not configured. Please supply keys in .env');
   }
 
-  const userCredential = await signInWithEmailAndPassword(auth, email, password);
-  const firebaseUser = userCredential.user;
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const firebaseUser = userCredential.user;
 
-  // Fetch user profile from Firestore
-  const userDocRef = doc(db, 'users', firebaseUser.uid);
-  const userSnapshot = await getDoc(userDocRef);
+    // Fetch user profile from Firestore
+    const userDocRef = doc(db, 'users', firebaseUser.uid);
+    const userSnapshot = await getDoc(userDocRef);
 
-  let userData;
+    let userData;
 
-  if (userSnapshot.exists()) {
-    userData = userSnapshot.data();
-  } else {
-    // If doc does not exist yet, initialize it
-    userData = {
-      uid: firebaseUser.uid,
-      name: firebaseUser.displayName || email.split('@')[0],
-      email: firebaseUser.email,
-      role: 'user',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+    if (userSnapshot.exists()) {
+      userData = userSnapshot.data();
+    } else {
+      // If doc does not exist yet, initialize it
+      userData = {
+        uid: firebaseUser.uid,
+        name: firebaseUser.displayName || email.split('@')[0],
+        email: firebaseUser.email,
+        role: 'user',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      await setDoc(userDocRef, userData);
+    }
+
+    const token = await firebaseUser.getIdToken();
+
+    return {
+      user: userData,
+      token
     };
-    await setDoc(userDocRef, userData);
+  } catch (error) {
+    const cleanMsg = getCleanAuthErrorMessage(error);
+    const err = new Error(cleanMsg);
+    err.code = error.code;
+    throw err;
   }
-
-  const token = await firebaseUser.getIdToken();
-
-  return {
-    user: userData,
-    token
-  };
 };
 
 /**

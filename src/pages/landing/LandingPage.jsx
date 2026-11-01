@@ -316,18 +316,40 @@ const LandingPage = () => {
   };
 
   const fillDemoUser = () => {
-    setAuthMode('login');
-    loginForm.setValue('email', 'alex@fitnesspro.com');
-    loginForm.setValue('password', 'password123');
-    toast.success('Demo athlete credentials loaded. Sign in below.');
+    // Populate login form
+    loginForm.setValue('email', 'athlete@fitnesstracker.com', { shouldValidate: true });
+    loginForm.setValue('password', 'Password123!', { shouldValidate: true });
+
+    // Populate register form
+    registerForm.setValue('name', 'Alex Hunter', { shouldValidate: true });
+    registerForm.setValue('email', 'athlete@fitnesstracker.com', { shouldValidate: true });
+    registerForm.setValue('password', 'Password123!', { shouldValidate: true });
+    registerForm.setValue('confirmPassword', 'Password123!', { shouldValidate: true });
+
+    if (authMode === 'register') {
+      toast.success('Demo athlete credentials loaded. Click Create My Account!');
+    } else {
+      toast.success('Demo athlete credentials loaded. Sign in below.');
+    }
     document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const fillDemoAdmin = () => {
-    setAuthMode('login');
-    loginForm.setValue('email', 'admin@fitnesstracker.com');
-    loginForm.setValue('password', 'Salman987$');
-    toast.success('Admin credentials loaded. Sign in below.');
+    // Populate login form
+    loginForm.setValue('email', 'admin@fitnesstracker.com', { shouldValidate: true });
+    loginForm.setValue('password', 'Salman987$', { shouldValidate: true });
+
+    // Populate register form
+    registerForm.setValue('name', 'Super Admin', { shouldValidate: true });
+    registerForm.setValue('email', 'admin@fitnesstracker.com', { shouldValidate: true });
+    registerForm.setValue('password', 'Salman987$', { shouldValidate: true });
+    registerForm.setValue('confirmPassword', 'Salman987$', { shouldValidate: true });
+
+    if (authMode === 'register') {
+      toast.success('Admin credentials loaded. Click Create My Account!');
+    } else {
+      toast.success('Admin credentials loaded. Sign in below.');
+    }
     document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
   };
 
