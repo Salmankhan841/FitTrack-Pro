@@ -158,8 +158,28 @@ body.light-theme .notification-text p {
 .notification-actions {
   display: flex;
   align-items: center;
+  gap: 8px;
   justify-content: center;
   flex-shrink: 0;
+}
+
+.delete-notif-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  transition: all 0.18s ease;
+}
+
+.delete-notif-btn:hover {
+  color: var(--accent-danger);
+  background: rgba(239, 68, 68, 0.1);
+  transform: scale(1.05);
 }
 
 .mark-read-btn {

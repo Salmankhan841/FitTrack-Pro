@@ -16,6 +16,8 @@ import { fetchMealsFromFirebase, fetchDailyGoalsFromFirebase } from '../firebase
 import { setMeals, setDailyGoal } from '../store/slices/nutritionSlice';
 import { fetchProgressLogsFromFirebase } from '../firebase/progressService';
 import { setProgressLogs } from '../store/slices/progressSlice';
+import { fetchNotificationsFromFirebase, addNotificationToFirebase } from '../firebase/notificationService';
+import { setNotifications } from '../store/slices/notificationSlice';
 
 export const useFirebaseSync = () => {
   const dispatch = useDispatch();
@@ -36,6 +38,7 @@ export const useFirebaseSync = () => {
 
   const userUid = user?.uid;
   const userEmail = user?.email;
+  const userName = user?.name;
 
   // 2. Load user records from Cloud Firestore when user is logged in
   useEffect(() => {
@@ -79,6 +82,28 @@ export const useFirebaseSync = () => {
             dispatch(setProgressLogs(logs));
           }
         }
+
+        // Notifications
+        const notifs = await fetchNotificationsFromFirebase(userUid);
+        if (isMounted) {
+          if (notifs.length > 0) {
+            dispatch(setNotifications(notifs));
+          } else if (isRealUser) {
+            const welcomeNotif = {
+              id: String(Date.now()),
+              category: 'System',
+              title: `Welcome to FitTrack Pro, ${userName || 'Athlete'}!`,
+              message: 'Your account has been created successfully. Welcome to the elite fitness platform. Start tracking your heavy lifts and daily nutrition.',
+              read: false,
+              date: new Date().toISOString()
+            };
+            dispatch(setNotifications([welcomeNotif]));
+            addNotificationToFirebase(userUid, welcomeNotif, {
+              name: userName || 'Athlete',
+              email: userEmail
+            }).catch(console.error);
+          }
+        }
       } catch (error) {
         console.error('Error synchronizing user Firestore data:', error);
       }
@@ -89,7 +114,7 @@ export const useFirebaseSync = () => {
     return () => {
       isMounted = false;
     };
-  }, [userUid, userEmail, dispatch]);
+  }, [userUid, userEmail, userName, dispatch]);
 };
 
 export default useFirebaseSync;

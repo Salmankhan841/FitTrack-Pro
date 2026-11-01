@@ -32,6 +32,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema, registerSchema } from '../../validators/authValidators';
 import { login, register as registerUser } from '../../store/slices/authSlice';
+import { addNotification } from '../../store/slices/notificationSlice';
 import toast from 'react-hot-toast';
 import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
@@ -308,7 +309,18 @@ const LandingPage = () => {
   const onRegisterSubmit = async (data) => {
     try {
       await dispatch(registerUser(data)).unwrap();
-      toast.success('Account created successfully!');
+      
+      const welcomeNotification = {
+        id: String(Date.now()),
+        category: 'System',
+        title: `Welcome to FitTrack Pro, ${data.name || 'Athlete'}!`,
+        message: 'Your account has been created successfully. Welcome to the elite fitness platform. Start tracking your heavy lifts and daily nutrition.',
+        read: false,
+        date: new Date().toISOString()
+      };
+      dispatch(addNotification(welcomeNotification));
+
+      toast.success('Your account has been created successfully! Welcome to FitTrack Pro.');
       navigate('/dashboard');
     } catch (error) {
       toast.error(error || 'Registration failed');

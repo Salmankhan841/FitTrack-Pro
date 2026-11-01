@@ -3,44 +3,28 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   notifications: [
     {
-      id: 1,
-      category: 'Workout',
-      title: 'Workout Goal Met',
-      message: 'You have hit your goal of 4 workouts this week! Keep it up!',
+      id: 'demo-welcome',
+      category: 'System',
+      title: 'Welcome to FitTrack Pro!',
+      message: 'Your account has been created successfully. Welcome to the elite fitness platform. Start tracking your heavy lifts and daily nutrition.',
       date: new Date().toISOString(),
       read: false,
     },
     {
-      id: 2,
-      category: 'Diet',
-      title: 'Calorie Alert',
-      message: 'You are 200 calories away from your daily goal.',
-      date: new Date(Date.now() - 86400000).toISOString(), // 1 day ago
-      read: false,
-    },
-    {
-      id: 3,
-      category: 'System',
-      title: 'Welcome to FitTrack',
-      message: 'Your account has been successfully set up. Let\'s get moving!',
-      date: new Date(Date.now() - 172800000).toISOString(), // 2 days ago
-      read: true,
-    },
-    {
-      id: 4,
+      id: 'demo-goal',
       category: 'Workout',
-      title: 'Rest Day Reminder',
-      message: 'You have taken 2 rest days this week. Remember, recovery is just as important as training!',
-      date: new Date(Date.now() - 3600000).toISOString(), // 1 hour ago
+      title: 'Workout Target Ready',
+      message: 'Organize your sets by chest, back, shoulders, arms, legs, and abs for balanced strength gains.',
+      date: new Date(Date.now() - 3600000).toISOString(),
       read: false,
     },
     {
-      id: 5,
-      category: 'System',
-      title: 'Goals Update',
-      message: 'You have 3 remaining goals to achieve this month. Keep pushing!',
-      date: new Date(Date.now() - 7200000).toISOString(), // 2 hours ago
-      read: false,
+      id: 'demo-diet',
+      category: 'Diet',
+      title: 'Daily Nutrition Goals',
+      message: 'Customize your calorie, protein, carbohydrate, and fat targets in the Nutrition Journal.',
+      date: new Date(Date.now() - 7200000).toISOString(),
+      read: true,
     }
   ]
 };
@@ -67,14 +51,27 @@ const notificationSlice = createSlice({
     },
     addNotification(state, action) {
       state.notifications.unshift({
-        id: Date.now(),
+        id: String(Date.now()),
         read: false,
         date: new Date().toISOString(),
         ...action.payload
       });
+    },
+    setNotifications(state, action) {
+      state.notifications = action.payload;
+    },
+    deleteNotification(state, action) {
+      state.notifications = state.notifications.filter(n => String(n.id) !== String(action.payload));
     }
   }
 });
 
-export const { markAsRead, markAllAsRead, markAllAsUnread, addNotification } = notificationSlice.actions;
+export const { 
+  markAsRead, 
+  markAllAsRead, 
+  markAllAsUnread, 
+  addNotification, 
+  setNotifications, 
+  deleteNotification 
+} = notificationSlice.actions;
 export default notificationSlice.reducer;

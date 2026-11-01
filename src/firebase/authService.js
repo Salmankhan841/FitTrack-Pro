@@ -72,7 +72,27 @@ export const registerWithFirebase = async (email, password, name) => {
       updatedAt: new Date().toISOString()
     };
 
-    await setDoc(doc(db, 'users', firebaseUser.uid), userData);
+    // Create dynamic welcome notification in Firestore
+    const welcomeNotifId = String(Date.now());
+    const displayName = name || email.split('@')[0];
+    const welcomeNotif = {
+      id: welcomeNotifId,
+      userId: firebaseUser.uid,
+      userName: displayName,
+      userEmail: firebaseUser.email,
+      category: 'System',
+      title: `Welcome to FitTrack Pro, ${displayName}!`,
+      message: 'Your account has been created successfully. Start by logging your workouts, tracking daily nutrition, and hitting your macro targets.',
+      read: false,
+      date: new Date().toISOString(),
+      createdAt: new Date().toISOString()
+    };
+
+    await Promise.all([
+      setDoc(doc(db, 'users', firebaseUser.uid), userData),
+      setDoc(doc(db, 'notifications', `${firebaseUser.uid}_${welcomeNotifId}`), welcomeNotif),
+      setDoc(doc(db, 'users', firebaseUser.uid, 'notifications', welcomeNotifId), welcomeNotif)
+    ]);
 
     const token = await firebaseUser.getIdToken();
 
