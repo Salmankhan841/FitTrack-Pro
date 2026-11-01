@@ -1,28 +1,30 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+export const SAMPLE_MEALS = [
+  {
+    id: 1,
+    mealName: 'Grilled Chicken Breast & Sweet Potato',
+    mealType: 'Lunch',
+    calories: 650,
+    protein: 56,
+    carbs: 62,
+    fats: 12,
+    date: new Date().toISOString().split('T')[0]
+  },
+  {
+    id: 2,
+    mealName: 'Oatmeal with Whey Protein & Almonds',
+    mealType: 'Breakfast',
+    calories: 520,
+    protein: 44,
+    carbs: 58,
+    fats: 14,
+    date: new Date().toISOString().split('T')[0]
+  }
+];
+
 const initialState = {
-  meals: [
-    {
-      id: 1,
-      mealName: 'Grilled Chicken Breast & Sweet Potato',
-      mealType: 'Lunch',
-      calories: 650,
-      protein: 56,
-      carbs: 62,
-      fats: 12,
-      date: new Date().toISOString().split('T')[0]
-    },
-    {
-      id: 2,
-      mealName: 'Oatmeal with Whey Protein & Almonds',
-      mealType: 'Breakfast',
-      calories: 520,
-      protein: 44,
-      carbs: 58,
-      fats: 14,
-      date: new Date().toISOString().split('T')[0]
-    }
-  ],
+  meals: [],
   dailyGoal: {
     calories: 2500,
     protein: 150,
@@ -70,6 +72,11 @@ const nutritionSlice = createSlice({
     setLastCongratulatedDate(state, action) {
       state.lastCongratulatedDate = action.payload;
     }
+  },
+  extraReducers: (builder) => {
+    builder.addCase('auth/logout', (state) => {
+      state.meals = [];
+    });
   },
 });
 

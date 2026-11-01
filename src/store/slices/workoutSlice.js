@@ -1,38 +1,40 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+export const SAMPLE_WORKOUTS = [
+  {
+    id: 1,
+    exerciseName: 'Barbell Flat Bench Press',
+    muscleGroup: 'Chest',
+    sets: 4,
+    reps: 10,
+    weight: 85,
+    date: new Date().toISOString().split('T')[0],
+    duration: 35
+  },
+  {
+    id: 2,
+    exerciseName: 'Weighted Pull-Ups',
+    muscleGroup: 'Back',
+    sets: 4,
+    reps: 8,
+    weight: 15,
+    date: new Date(Date.now() - 86400000).toISOString().split('T')[0],
+    duration: 30
+  },
+  {
+    id: 3,
+    exerciseName: 'Standing Overhead Press',
+    muscleGroup: 'Shoulders',
+    sets: 3,
+    reps: 12,
+    weight: 50,
+    date: new Date(Date.now() - 172800000).toISOString().split('T')[0],
+    duration: 25
+  }
+];
+
 const initialState = {
-  workouts: [
-    {
-      id: 1,
-      exerciseName: 'Barbell Flat Bench Press',
-      muscleGroup: 'Chest',
-      sets: 4,
-      reps: 10,
-      weight: 85,
-      date: new Date().toISOString().split('T')[0],
-      duration: 35
-    },
-    {
-      id: 2,
-      exerciseName: 'Weighted Pull-Ups',
-      muscleGroup: 'Back',
-      sets: 4,
-      reps: 8,
-      weight: 15,
-      date: new Date(Date.now() - 86400000).toISOString().split('T')[0],
-      duration: 30
-    },
-    {
-      id: 3,
-      exerciseName: 'Standing Overhead Press',
-      muscleGroup: 'Shoulders',
-      sets: 3,
-      reps: 12,
-      weight: 50,
-      date: new Date(Date.now() - 172800000).toISOString().split('T')[0],
-      duration: 25
-    }
-  ],
+  workouts: [],
   loading: false,
   error: null,
 };
@@ -62,6 +64,11 @@ const workoutSlice = createSlice({
     setWorkouts(state, action) {
       state.workouts = action.payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase('auth/logout', (state) => {
+      state.workouts = [];
+    });
   },
 });
 

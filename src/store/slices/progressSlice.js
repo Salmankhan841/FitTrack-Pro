@@ -1,13 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+export const SAMPLE_LOGS = [
+  { id: 1, date: '2023-10-01', weight: 80, bodyFat: 20 },
+  { id: 2, date: '2023-10-08', weight: 78.5, bodyFat: 19.5 },
+  { id: 3, date: '2023-10-15', weight: 76.8, bodyFat: 19 },
+  { id: 4, date: '2023-10-22', weight: 75.2, bodyFat: 18.5 },
+];
+
 const initialState = {
-  logs: [
-    // Pre-populate with some mock data for the chart
-    { id: 1, date: '2023-10-01', weight: 180, bodyFat: 20 },
-    { id: 2, date: '2023-10-08', weight: 178, bodyFat: 19.5 },
-    { id: 3, date: '2023-10-15', weight: 176, bodyFat: 19 },
-    { id: 4, date: '2023-10-22', weight: 175, bodyFat: 18.5 },
-  ],
+  logs: [],
   loading: false,
   error: null,
 };
@@ -33,6 +34,11 @@ const progressSlice = createSlice({
     setError(state, action) {
       state.error = action.payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase('auth/logout', (state) => {
+      state.logs = [];
+    });
   },
 });
 

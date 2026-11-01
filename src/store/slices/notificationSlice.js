@@ -1,32 +1,34 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+export const SAMPLE_NOTIFICATIONS = [
+  {
+    id: 'demo-welcome',
+    category: 'System',
+    title: 'Welcome to FitTrack Pro!',
+    message: 'Your account has been created successfully. Welcome to the elite fitness platform. Start tracking your heavy lifts and daily nutrition.',
+    date: new Date().toISOString(),
+    read: false,
+  },
+  {
+    id: 'demo-goal',
+    category: 'Workout',
+    title: 'Workout Target Ready',
+    message: 'Organize your sets by chest, back, shoulders, arms, legs, and abs for balanced strength gains.',
+    date: new Date(Date.now() - 3600000).toISOString(),
+    read: false,
+  },
+  {
+    id: 'demo-diet',
+    category: 'Diet',
+    title: 'Daily Nutrition Goals',
+    message: 'Customize your calorie, protein, carbohydrate, and fat targets in the Nutrition Journal.',
+    date: new Date(Date.now() - 7200000).toISOString(),
+    read: true,
+  }
+];
+
 const initialState = {
-  notifications: [
-    {
-      id: 'demo-welcome',
-      category: 'System',
-      title: 'Welcome to FitTrack Pro!',
-      message: 'Your account has been created successfully. Welcome to the elite fitness platform. Start tracking your heavy lifts and daily nutrition.',
-      date: new Date().toISOString(),
-      read: false,
-    },
-    {
-      id: 'demo-goal',
-      category: 'Workout',
-      title: 'Workout Target Ready',
-      message: 'Organize your sets by chest, back, shoulders, arms, legs, and abs for balanced strength gains.',
-      date: new Date(Date.now() - 3600000).toISOString(),
-      read: false,
-    },
-    {
-      id: 'demo-diet',
-      category: 'Diet',
-      title: 'Daily Nutrition Goals',
-      message: 'Customize your calorie, protein, carbohydrate, and fat targets in the Nutrition Journal.',
-      date: new Date(Date.now() - 7200000).toISOString(),
-      read: true,
-    }
-  ]
+  notifications: []
 };
 
 const notificationSlice = createSlice({
@@ -63,6 +65,11 @@ const notificationSlice = createSlice({
     deleteNotification(state, action) {
       state.notifications = state.notifications.filter(n => String(n.id) !== String(action.payload));
     }
+  },
+  extraReducers: (builder) => {
+    builder.addCase('auth/logout', (state) => {
+      state.notifications = [];
+    });
   }
 });
 

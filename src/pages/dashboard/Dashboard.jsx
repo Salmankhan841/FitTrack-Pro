@@ -27,16 +27,77 @@ const Dashboard = () => {
 
   const totalWorkouts = workouts.length;
   
-  // Calculate average calories consumed today vs goal
-  const today = new Date().toISOString().split('T')[0];
-  const todayMeals = meals.filter(m => m.date === today);
-  const todayCaloriesConsumed = todayMeals.reduce((sum, m) => sum + (Number(m.calories) || 0), 0);
-  
   // Calculate estimated calories burned today
+  const today = new Date().toISOString().split('T')[0];
   const todayWorkouts = workouts.filter(w => w.date === today);
   const todayCaloriesBurned = todayWorkouts.reduce((sum, w) => sum + (Number(w.duration) * 8 || 0), 0);
 
   const currentWeight = logs.length > 0 ? logs[logs.length - 1].weight : '--';
+
+  // Last 7 days dynamic calculation for Calories & Workout charts
+  const { caloriesData, workoutData, activeDaysThisWeek } = useMemo(() => {
+    const days = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const dateStr = d.toISOString().split('T')[0];
+      const dayName = d.toLocaleDateString('en-US', { weekday: 'short' });
+      days.push({ dateStr, dayName });
+    }
+
+    const past7DateSet = new Set(days.map(d => d.dateStr));
+
+    const cData = days.map(({ dateStr, dayName }) => {
+      const dayMeals = meals.filter(m => m.date === dateStr);
+      const consumed = dayMeals.reduce((sum, m) => sum + (Number(m.calories) || 0), 0);
+      const dayWorkouts = workouts.filter(w => w.date === dateStr);
+      const burned = dayWorkouts.reduce((sum, w) => sum + (Number(w.duration) * 8 || 0), 0);
+      return {
+        name: dayName,
+        date: dateStr,
+        caloriesConsumed: consumed,
+        caloriesBurned: burned
+      };
+    });
+
+    const wData = days.map(({ dateStr, dayName }) => {
+      const dayWorkouts = workouts.filter(w => w.date === dateStr);
+      const duration = dayWorkouts.reduce((sum, w) => sum + (Number(w.duration) || 0), 0);
+      return {
+        day: dayName,
+        date: dateStr,
+        duration
+      };
+    });
+
+    const uniqueActiveWorkoutDays = new Set(
+      workouts
+        .filter(w => past7DateSet.has(w.date))
+        .map(w => w.date)
+    ).size;
+
+    return { 
+      caloriesData: cData, 
+      workoutData: wData,
+      activeDaysThisWeek: uniqueActiveWorkoutDays 
+    };
+  }, [meals, workouts]);
+
+  const progressData = useMemo(() => {
+    if (!logs || logs.length === 0) return [];
+    const sorted = [...logs].sort((a, b) => new Date(a.date) - new Date(b.date));
+    return sorted.slice(-7).map((log, index) => {
+      const dateObj = new Date(log.date);
+      const label = isNaN(dateObj.getTime()) 
+        ? `W${index + 1}` 
+        : `${dateObj.getMonth() + 1}/${dateObj.getDate()}`;
+      return {
+        week: label,
+        weight: Number(log.weight) || 0,
+        target: 73.0
+      };
+    });
+  }, [logs]);
 
   // Sort activities chronologically for the timeline
   const recentActivity = useMemo(() => {
@@ -47,34 +108,6 @@ const Dashboard = () => {
     ];
     return combined.sort((a, b) => b.timestamp - a.timestamp).slice(0, 6);
   }, [workouts, meals, logs]);
-
-  // Chart data
-  const caloriesData = [
-    { name: 'Mon', caloriesBurned: 300, caloriesConsumed: 2200 },
-    { name: 'Tue', caloriesBurned: 450, caloriesConsumed: 2100 },
-    { name: 'Wed', caloriesBurned: 180, caloriesConsumed: 2300 },
-    { name: 'Thu', caloriesBurned: 500, caloriesConsumed: 2000 },
-    { name: 'Fri', caloriesBurned: todayCaloriesBurned || 420, caloriesConsumed: todayCaloriesConsumed || 2400 },
-    { name: 'Sat', caloriesBurned: 600, caloriesConsumed: 2600 },
-    { name: 'Sun', caloriesBurned: 250, caloriesConsumed: 2100 },
-  ];
-
-  const workoutData = [
-    { day: 'Mon', duration: 45 },
-    { day: 'Tue', duration: 60 },
-    { day: 'Wed', duration: 20 },
-    { day: 'Thu', duration: 55 },
-    { day: 'Fri', duration: 40 },
-    { day: 'Sat', duration: 75 },
-    { day: 'Sun', duration: 30 },
-  ];
-
-  const progressData = [
-    { week: 'W1', weight: 75.0, target: 73.0 },
-    { week: 'W2', weight: 74.5, target: 73.0 },
-    { week: 'W3', weight: 74.1, target: 73.0 },
-    { week: 'W4', weight: currentWeight !== '--' ? currentWeight : 73.5, target: 73.0 },
-  ];
 
   const formattedDate = new Date().toLocaleDateString('en-US', {
     weekday: 'long',
@@ -122,11 +155,19 @@ const Dashboard = () => {
             <div className="stat-content">
               <span className="stat-label">Weekly Consistency</span>
               <div className="stat-value-row">
-                <span className="stat-value">5</span>
+                <span className="stat-value">{activeDaysThisWeek}</span>
                 <span className="stat-sub">/ 7 Days</span>
               </div>
-              <span className="stat-trend trend-positive">
-                <TrendingUp size={12} /> 71% of target
+              <span className={`stat-trend ${activeDaysThisWeek > 0 ? 'trend-positive' : 'trend-neutral'}`}>
+                {activeDaysThisWeek > 0 ? (
+                  <>
+                    <TrendingUp size={12} /> {Math.round((activeDaysThisWeek / 7) * 100)}% of target
+                  </>
+                ) : (
+                  <>
+                    <Clock size={12} /> 0% this week
+                  </>
+                )}
               </span>
             </div>
           </div>
@@ -140,11 +181,19 @@ const Dashboard = () => {
             <div className="stat-content">
               <span className="stat-label">Calories Burned</span>
               <div className="stat-value-row">
-                <span className="stat-value">{todayCaloriesBurned || 420}</span>
+                <span className="stat-value">{todayCaloriesBurned}</span>
                 <span className="stat-sub">kcal</span>
               </div>
-              <span className="stat-trend trend-neutral">
-                <Clock size={12} /> Active burn today
+              <span className={`stat-trend ${todayCaloriesBurned > 0 ? 'trend-positive' : 'trend-neutral'}`}>
+                {todayCaloriesBurned > 0 ? (
+                  <>
+                    <Flame size={12} /> Active burn today
+                  </>
+                ) : (
+                  <>
+                    <Clock size={12} /> 0 kcal burned today
+                  </>
+                )}
               </span>
             </div>
           </div>
@@ -161,8 +210,16 @@ const Dashboard = () => {
                 <span className="stat-value">{totalWorkouts}</span>
                 <span className="stat-sub">Logged</span>
               </div>
-              <span className="stat-trend trend-positive">
-                <Sparkles size={12} /> Keep the streak!
+              <span className={`stat-trend ${totalWorkouts > 0 ? 'trend-positive' : 'trend-neutral'}`}>
+                {totalWorkouts > 0 ? (
+                  <>
+                    <Sparkles size={12} /> Keep the streak!
+                  </>
+                ) : (
+                  <>
+                    <Plus size={12} /> Start your first workout
+                  </>
+                )}
               </span>
             </div>
           </div>
@@ -177,10 +234,10 @@ const Dashboard = () => {
               <span className="stat-label">Current Weight</span>
               <div className="stat-value-row">
                 <span className="stat-value">{currentWeight}</span>
-                <span className="stat-sub">kg</span>
+                {currentWeight !== '--' && <span className="stat-sub">kg</span>}
               </div>
               <span className="stat-trend trend-neutral">
-                Target: 73.0 kg
+                {currentWeight !== '--' ? 'Target: 73.0 kg' : '0 kg recorded yet'}
               </span>
             </div>
           </div>
@@ -207,7 +264,13 @@ const Dashboard = () => {
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" vertical={false} />
                   <XAxis dataKey="name" stroke="var(--text-muted)" tick={{fill: 'var(--text-secondary)', fontSize: 12}} axisLine={false} tickLine={false} />
-                  <YAxis stroke="var(--text-muted)" tick={{fill: 'var(--text-secondary)', fontSize: 12}} axisLine={false} tickLine={false} />
+                  <YAxis 
+                    stroke="var(--text-muted)" 
+                    tick={{fill: 'var(--text-secondary)', fontSize: 12}} 
+                    axisLine={false} 
+                    tickLine={false}
+                    domain={[0, (dataMax) => (dataMax > 0 ? Math.ceil(dataMax * 1.15) : 500)]}
+                  />
                   <RechartsTooltip 
                     contentStyle={{ 
                       backgroundColor: 'var(--bg-surface-elevated)', 
@@ -232,7 +295,13 @@ const Dashboard = () => {
                   <BarChart data={workoutData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" vertical={false} />
                     <XAxis dataKey="day" stroke="var(--text-muted)" tick={{fill: 'var(--text-secondary)', fontSize: 11}} axisLine={false} tickLine={false} />
-                    <YAxis stroke="var(--text-muted)" tick={{fill: 'var(--text-secondary)', fontSize: 11}} axisLine={false} tickLine={false} />
+                    <YAxis 
+                      stroke="var(--text-muted)" 
+                      tick={{fill: 'var(--text-secondary)', fontSize: 11}} 
+                      axisLine={false} 
+                      tickLine={false}
+                      domain={[0, (dataMax) => (dataMax > 0 ? Math.ceil(dataMax * 1.2) : 60)]}
+                    />
                     <RechartsTooltip 
                       cursor={{fill: 'var(--chart-cursor)'}}
                       contentStyle={{ backgroundColor: 'var(--bg-surface-elevated)', border: '1px solid var(--border-highlight)', borderRadius: '10px', boxShadow: 'var(--shadow-card)', color: 'var(--text-primary)' }}
@@ -246,19 +315,36 @@ const Dashboard = () => {
 
             <Card title="Weight Progression" subtitle="Weekly target tracking" className="chart-card" data-aos="fade-up" data-aos-delay="200">
               <div className="chart-wrapper">
-                <ResponsiveContainer width="100%" height={240}>
-                  <LineChart data={progressData} margin={{ top: 10, right: 15, left: -25, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" vertical={false} />
-                    <XAxis dataKey="week" stroke="var(--text-muted)" tick={{fill: 'var(--text-secondary)', fontSize: 11}} axisLine={false} tickLine={false} />
-                    <YAxis domain={['dataMin - 1', 'dataMax + 1']} stroke="var(--text-muted)" tick={{fill: 'var(--text-secondary)', fontSize: 11}} axisLine={false} tickLine={false} />
-                    <RechartsTooltip 
-                      contentStyle={{ backgroundColor: 'var(--bg-surface-elevated)', border: '1px solid var(--border-highlight)', borderRadius: '10px', boxShadow: 'var(--shadow-card)', color: 'var(--text-primary)' }}
-                      itemStyle={{ color: 'var(--text-primary)' }}
-                    />
-                    <Line type="monotone" name="Weight (kg)" dataKey="weight" stroke="var(--accent-secondary)" strokeWidth={3} dot={{r: 5, fill: 'var(--bg-surface)', stroke: 'var(--accent-secondary)', strokeWidth: 2}} activeDot={{r: 7}} />
-                    <Line type="monotone" name="Goal (kg)" dataKey="target" stroke="var(--accent-success)" strokeDasharray="4 4" strokeWidth={2} dot={false} />
-                  </LineChart>
-                </ResponsiveContainer>
+                {progressData.length === 0 ? (
+                  <div className="empty-chart-placeholder">
+                    <Scale size={28} />
+                    <span>0 weigh-ins logged</span>
+                    <p>Record your body weight to unlock your progression trend line.</p>
+                    <Link to="/progress" className="empty-chart-action">
+                      <Plus size={14} /> Record Weight
+                    </Link>
+                  </div>
+                ) : (
+                  <ResponsiveContainer width="100%" height={240}>
+                    <LineChart data={progressData} margin={{ top: 10, right: 15, left: -25, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" vertical={false} />
+                      <XAxis dataKey="week" stroke="var(--text-muted)" tick={{fill: 'var(--text-secondary)', fontSize: 11}} axisLine={false} tickLine={false} />
+                      <YAxis 
+                        domain={[(dataMin) => Math.max(0, Math.floor(dataMin - 2)), (dataMax) => Math.ceil(dataMax + 2)]} 
+                        stroke="var(--text-muted)" 
+                        tick={{fill: 'var(--text-secondary)', fontSize: 11}} 
+                        axisLine={false} 
+                        tickLine={false} 
+                      />
+                      <RechartsTooltip 
+                        contentStyle={{ backgroundColor: 'var(--bg-surface-elevated)', border: '1px solid var(--border-highlight)', borderRadius: '10px', boxShadow: 'var(--shadow-card)', color: 'var(--text-primary)' }}
+                        itemStyle={{ color: 'var(--text-primary)' }}
+                      />
+                      <Line type="monotone" name="Weight (kg)" dataKey="weight" stroke="var(--accent-secondary)" strokeWidth={3} dot={{r: 5, fill: 'var(--bg-surface)', stroke: 'var(--accent-secondary)', strokeWidth: 2}} activeDot={{r: 7}} />
+                      <Line type="monotone" name="Goal (kg)" dataKey="target" stroke="var(--accent-success)" strokeDasharray="4 4" strokeWidth={2} dot={false} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                )}
               </div>
             </Card>
           </div>

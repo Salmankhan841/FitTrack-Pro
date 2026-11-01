@@ -11,13 +11,13 @@ import { isFirebaseConfigured } from '../firebase/config';
 import { subscribeToFirebaseAuthState } from '../firebase/authService';
 import { setAuthSession } from '../store/slices/authSlice';
 import { fetchWorkoutsFromFirebase } from '../firebase/workoutService';
-import { setWorkouts } from '../store/slices/workoutSlice';
+import { setWorkouts, SAMPLE_WORKOUTS } from '../store/slices/workoutSlice';
 import { fetchMealsFromFirebase, fetchDailyGoalsFromFirebase } from '../firebase/nutritionService';
-import { setMeals, setDailyGoal } from '../store/slices/nutritionSlice';
+import { setMeals, setDailyGoal, SAMPLE_MEALS } from '../store/slices/nutritionSlice';
 import { fetchProgressLogsFromFirebase } from '../firebase/progressService';
-import { setProgressLogs } from '../store/slices/progressSlice';
+import { setProgressLogs, SAMPLE_LOGS } from '../store/slices/progressSlice';
 import { fetchNotificationsFromFirebase, addNotificationToFirebase } from '../firebase/notificationService';
-import { setNotifications } from '../store/slices/notificationSlice';
+import { setNotifications, SAMPLE_NOTIFICATIONS } from '../store/slices/notificationSlice';
 
 export const useFirebaseSync = () => {
   const dispatch = useDispatch();
@@ -40,7 +40,25 @@ export const useFirebaseSync = () => {
   const userEmail = user?.email;
   const userName = user?.name;
 
-  // 2. Load user records from Cloud Firestore when user is logged in
+  // 2. Demo athlete local fallback when offline / no Firebase configured
+  useEffect(() => {
+    if (!user) return;
+
+    const isRealUser = 
+      userEmail !== 'athlete@fitnesstracker.com' && 
+      userEmail !== 'alex@fitnesspro.com' && 
+      userEmail !== 'alex@fitnesstracker.com' && 
+      userEmail !== 'admin@fitnesstracker.com';
+
+    if (!isRealUser && !isFirebaseConfigured) {
+      dispatch(setWorkouts(SAMPLE_WORKOUTS));
+      dispatch(setMeals(SAMPLE_MEALS));
+      dispatch(setProgressLogs(SAMPLE_LOGS));
+      dispatch(setNotifications(SAMPLE_NOTIFICATIONS));
+    }
+  }, [user, userEmail, dispatch]);
+
+  // 3. Load user records from Cloud Firestore when user is logged in
   useEffect(() => {
     if (!isFirebaseConfigured || !userUid) return;
 
@@ -56,16 +74,24 @@ export const useFirebaseSync = () => {
         // Workouts
         const workouts = await fetchWorkoutsFromFirebase(userUid);
         if (isMounted) {
-          if (workouts.length > 0 || isRealUser) {
+          if (workouts.length > 0) {
             dispatch(setWorkouts(workouts));
+          } else if (!isRealUser) {
+            dispatch(setWorkouts(SAMPLE_WORKOUTS));
+          } else {
+            dispatch(setWorkouts([]));
           }
         }
 
         // Meals
         const meals = await fetchMealsFromFirebase(userUid);
         if (isMounted) {
-          if (meals.length > 0 || isRealUser) {
+          if (meals.length > 0) {
             dispatch(setMeals(meals));
+          } else if (!isRealUser) {
+            dispatch(setMeals(SAMPLE_MEALS));
+          } else {
+            dispatch(setMeals([]));
           }
         }
 
@@ -78,8 +104,12 @@ export const useFirebaseSync = () => {
         // Progress
         const logs = await fetchProgressLogsFromFirebase(userUid);
         if (isMounted) {
-          if (logs.length > 0 || isRealUser) {
+          if (logs.length > 0) {
             dispatch(setProgressLogs(logs));
+          } else if (!isRealUser) {
+            dispatch(setProgressLogs(SAMPLE_LOGS));
+          } else {
+            dispatch(setProgressLogs([]));
           }
         }
 
@@ -102,6 +132,8 @@ export const useFirebaseSync = () => {
               name: userName || 'Athlete',
               email: userEmail
             }).catch(console.error);
+          } else {
+            dispatch(setNotifications(SAMPLE_NOTIFICATIONS));
           }
         }
       } catch (error) {
